@@ -1,98 +1,96 @@
-import React, { Component } from "react";
-import PhonebookTitle from "./PhonebookTitle/PhonebookTitle";
-import ContactForm from "./ContactForm/ContactForm";
-import ContactList from "./ContactList/ContactList";
-import FilterContact from "./FilterContact/FilterContact";
+import { Component } from 'react';
+import { Form } from './Form/Form';
+import { Contacts } from './Contacts/Contacts';
+import { Filter } from './Filter/Filter';
+import css from './App.module.css';
 
 export class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      contacts: [],
-      filter: "",
-    };
-  }
+  state = {
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
+  };
 
-  addContact = (contact) => {
-    const { contacts } = this.state;
-    const isDuplicate = contacts.some(
-      (existingContact) => existingContact.name === contact.name
+  addUser = newItem => {
+    const decisionForAdd = this.isIncludingName(
+      newItem.name,
+      this.state.contacts
     );
-    if (isDuplicate) {
-      alert("Contact already exists!");
-    } else {
-      this.setState((prevState) => ({
-        contacts: [...prevState.contacts, contact],
-      }));
+
+    if (decisionForAdd) {
+      alert(`${decisionForAdd.name} is already in contacts !`);
+      return;
     }
+
+    this.setState(prev => {
+      return { contacts: [...prev.contacts, newItem] };
+    });
   };
 
-  deleteContact = (id) => {
-    this.setState((prevState) => ({
-      contacts: prevState.contacts.filter((contact) => contact.id !== id),
-    }));
+  filterByName = () => {
+    const { filter, contacts } = this.state;
+    const lowName = filter.toLowerCase();
+    return contacts.filter(item => item.name.toLowerCase().includes(lowName));
   };
 
-  handleFilterChange = (filter) => {
-    this.setState({ filter });
+  isIncludingName = (name, array) => {
+    const lowName = name.toLowerCase();
+    return array.find(({ name }) => name.toLowerCase() === lowName);
+  };
+
+  inputHandler = e => {
+    this.setState({ filter: e.target.value });
+  };
+
+  deleteHandler = id => {
+    const queryIndex = this.state.contacts.findIndex(item => item.id === id);
+
+    this.setState(({ contacts }) => {
+      return {
+        contacts: [...contacts].filter((item, index) => index !== queryIndex),
+      };
+    });
   };
 
   render() {
-    const { contacts, filter } = this.state;
-
-    const filteredContacts = contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(filter)
-    );
-
     return (
       <div
         style={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          // justifyContent: 'center',
+          alignItems: 'center',
           fontSize: 40,
-          color: "#010101",
+          color: '#010101',
         }}
       >
-        <div
-          style={{
-            border: "1px solid black",
-            padding: "15px 30px",
-            width: 350,
-          }}
-        >
-          <PhonebookTitle
-            title="Name"
-            styles={{
-              fontSize: 15,
-              marginBottom: 0,
-            }}
-          />
-          <ContactForm onAddContact={this.addContact} />
-        </div>
-
-        <PhonebookTitle
-          title="Contacts"
-          styles={{
-            fontSize: 25,
-            marginBottom: 0,
-          }}
+        <h1 className={css.title}>Phonebook</h1>
+        <Form addUser={this.addUser}></Form>
+        <h2 className={css.title}>Contacts</h2>
+        <Filter
+          inputHandler={this.inputHandler}
+          inputValue={this.state.filter}
         />
-
-        <FilterContact
-          filter={filter}
-          onFilterChange={this.handleFilterChange}
-        />
-
-        <ContactList
-          contacts={filteredContacts}
-          onDeleteContact={this.deleteContact}
+        <Contacts
+          contactList={this.filterByName()}
+          deleteContact={this.deleteHandler}
         />
       </div>
     );
   }
 }
 
-export default App;
+// идеи тел. книги:
+// расположение списка - строгое в ячейках таблицы
+// кнопки удалить/вызвать появится при выделении строки
+// строки разных оттенков
+// при фокусе есть обводка, стрелками вверх-вниз смена строки, кнопки del/enter удаляют и начинают звонок
+// перед началом звонка - модалка "вы уверены что хотите звонить?"
+// при удалении - модалка "вы уверены что хотите удалить?"
+// проверка на существующий номер, для этого последние 9 цифр сравнить, для этого убрать пробелы и тире
+// верстка адаптивная, на широком экране позади фон как в телеграмм
