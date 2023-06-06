@@ -47,11 +47,9 @@ export class App extends Component {
   };
 
   deleteHandler = id => {
-    const queryIndex = this.state.contacts.findIndex(item => item.id === id);
-
     this.setState(({ contacts }) => {
       return {
-        contacts: [...contacts].filter((item, index) => index !== queryIndex),
+        contacts: contacts.filter((item) =>item.id !== id),
       };
     });
   };
@@ -63,7 +61,6 @@ export class App extends Component {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          // justifyContent: 'center',
           alignItems: 'center',
           fontSize: 40,
           color: '#010101',
@@ -85,12 +82,3 @@ export class App extends Component {
   }
 }
 
-// идеи тел. книги:
-// расположение списка - строгое в ячейках таблицы
-// кнопки удалить/вызвать появится при выделении строки
-// строки разных оттенков
-// при фокусе есть обводка, стрелками вверх-вниз смена строки, кнопки del/enter удаляют и начинают звонок
-// перед началом звонка - модалка "вы уверены что хотите звонить?"
-// при удалении - модалка "вы уверены что хотите удалить?"
-// проверка на существующий номер, для этого последние 9 цифр сравнить, для этого убрать пробелы и тире
-// верстка адаптивная, на широком экране позади фон как в телеграмм

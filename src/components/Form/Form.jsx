@@ -9,23 +9,23 @@ export class Form extends Component {
     number: '',
   };
 
-  handlerSubmit = e => {
+  handlerSubmit = (e) => {
     e.preventDefault();
     const { addUser } = this.props;
     const { name, number } = this.state;
     const modelId = nanoid();
-    addUser({ id: modelId, name: name, number: number });
+    addUser({ id: modelId, name, number });
     this.setState({ name: '', number: '' });
   };
 
-  handlerChangeName = e => {
-    //  const { name, value } = e.currentTarget;
-    this.setState({ name: e.currentTarget.value });
+  handlerChange = (e) => {
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value });
   };
 
-  handlerChangeNumber = e => {
-    //  const { name, value } = e.currentTarget;
-    this.setState({ number: e.currentTarget.value });
+  handlerChangeNumber = (e) => {
+    const { value } = e.currentTarget;
+    this.setState({ number: value });
   };
 
   render() {
@@ -40,7 +40,7 @@ export class Form extends Component {
             name="name"
             required
             value={name}
-            onChange={this.handlerChangeName}
+            onChange={this.handlerChange}
           />
         </label>
         <label className={css.formLabel}>
@@ -50,7 +50,7 @@ export class Form extends Component {
             name="number"
             required
             value={number}
-            onChange={this.handlerChangeNumber}
+            onChange={this.handlerChange}
           />
         </label>
 
