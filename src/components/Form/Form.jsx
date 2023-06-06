@@ -18,10 +18,6 @@ export class Form extends Component {
     this.setState({ name: '', number: '' });
   };
 
-  handlerChange = (e) => {
-    const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
-  };
 
   handlerChangeNumber = (e) => {
     const { value } = e.currentTarget;
